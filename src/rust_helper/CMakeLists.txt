@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.5)
-project(rust_helper)
-
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CARGO_CMD cargo build)
     set(TARGET_DIR "debug")
