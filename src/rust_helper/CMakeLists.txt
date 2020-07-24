@@ -8,6 +8,14 @@ endif ()
 
 set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/rust_helper.so")
 
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
+	COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
+	DEPENDS src/lib.rs)
+
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
+	COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
+	DEPENDS src/lib.rs)
+
 add_custom_target(client ALL
     COMMENT "Compiling client module"
     COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} ${CARGO_CMD} 
