@@ -1,21 +1,30 @@
+message(STATUS "Working on Rust")
+message(STATUS "Source dir: " ${CMAKE_CURRENT_SOURCE_DIR})
+message(STATUS "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Compiling Rust in Debug mode")
     set(CARGO_CMD cargo build)
     set(TARGET_DIR "debug")
 else ()
+    message(STATUS "Compiling Rust in Release mode")
     set(CARGO_CMD cargo build --release)
     set(TARGET_DIR "release")
 endif ()
 
 set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/rust_helper.so")
 
+message(STATUS "Generating C++ bridge header files")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
 	COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
 	DEPENDS src/lib.rs)
 
+message(STATUS "Generating C++ bridge cc files")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
 	COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
 	DEPENDS src/lib.rs)
 
+message(STATUS "Running Cargo on Rust package")
 add_custom_target(client ALL
     COMMENT "Compiling client module"
     COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} ${CARGO_CMD} 
@@ -23,6 +32,6 @@ add_custom_target(client ALL
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(client PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_test(NAME client_test 
-    COMMAND cargo test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+# add_test(NAME client_test 
+#     COMMAND cargo test
+#     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

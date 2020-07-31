@@ -19,8 +19,8 @@
 #include "std_msgs/msg/string.hpp"
 
 // Includes for Rust <-> C++ communication via cxx
-#include "rust/cxx.h"
-#include "rust_helper/src/lib.rs.h"
+// #include "rust/cxx.h"
+#include "rust_pubsub/lib.rs.h"
 
 using namespace std::chrono_literals;
 
