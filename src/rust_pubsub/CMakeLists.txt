@@ -34,26 +34,32 @@ set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_helper.so")
 
 # Compile the Rust library
 message(STATUS "Running Cargo on Rust package")
-add_custom_target(client ALL
+add_custom_target(rust_helper_lib ALL
     COMMENT "Compiling client module"
     COMMAND CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR} ${CARGO_CMD} 
     COMMAND cp ${CLIENT_SO} ${CMAKE_CURRENT_BINARY_DIR}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper)
-set_target_properties(client PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties(rust_helper_lib PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Set up the code generator for the Rust library's .h file
-add_custom_command(TARGET client
-  # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
-  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
+# add_custom_command(TARGET rust_helper_lib
+#   # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
+#   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
+#   COMMENT "Building C++ bridge header files"
+# 	DEPENDS src/lib.rs)
+add_custom_target(rust_h ALL
   COMMENT "Building C++ bridge header files"
-	DEPENDS src/lib.rs)
+  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h)
 
 # Set up the code generator for the Rust library's .cc file
-add_custom_command(TARGET client
-  # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
-  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
+# add_custom_command(TARGET rust_helper_lib
+#   # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
+#   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
+#   COMMENT "Building C++ bridge cc files"
+#   DEPENDS src/lib.rs)
+add_custom_target(rust_cc ALL
   COMMENT "Building C++ bridge cc files"
-  DEPENDS src/lib.rs)
+  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -65,6 +71,7 @@ add_executable(talker src/publisher_member_function.cpp)
 target_include_directories(talker
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR})
+add_dependencies(talker rust_helper_lib rust_h rust_cc)
 ament_target_dependencies(talker rclcpp std_msgs)
 
 # Link up the listener
