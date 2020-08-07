@@ -49,7 +49,8 @@ set_target_properties(rust_helper_lib PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY
 # 	DEPENDS src/lib.rs)
 add_custom_target(rust_h ALL
   COMMENT "Building C++ bridge header files"
-  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h)
+  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/rust_bridge.h
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs)
 
 # Set up the code generator for the Rust library's .cc file
 # add_custom_command(TARGET rust_helper_lib
@@ -59,7 +60,8 @@ add_custom_target(rust_h ALL
 #   DEPENDS src/lib.rs)
 add_custom_target(rust_cc ALL
   COMMENT "Building C++ bridge cc files"
-  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc)
+  COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/rust_bridge.cc
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -68,10 +70,10 @@ find_package(std_msgs REQUIRED)
 
 # Link up the talker
 add_executable(talker src/publisher_member_function.cpp)
+add_dependencies(talker rust_helper_lib rust_h rust_cc)
 target_include_directories(talker
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR})
-add_dependencies(talker rust_helper_lib rust_h rust_cc)
 ament_target_dependencies(talker rclcpp std_msgs)
 
 # Link up the listener

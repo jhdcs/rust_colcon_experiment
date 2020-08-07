@@ -19,8 +19,7 @@
 #include "std_msgs/msg/string.hpp"
 
 // Includes for Rust <-> C++ communication via cxx
-// #include "rust/cxx.h"
-#include "lib.rs.h"
+#include "rust_bridge.h"
 
 using namespace std::chrono_literals;
 
@@ -42,7 +41,8 @@ private:
   void timer_callback()
   {
     auto message = std_msgs::msg::String();
-    message.data = gen_message(count_++).data();
+    auto testvar = gen_message(count_++).data();
+    // message.data = gen_message(count_++).data();
     RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
     publisher_->publish(message);
   }
