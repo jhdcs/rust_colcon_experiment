@@ -70,13 +70,16 @@ add_custom_command(TARGET client
   COMMENT "Building C++ bridge cc files"
   DEPENDS src/lib.rs)
 
+add_library(rust_helper_library STATIC IMPORTED GLOBAL)
+add_dependencies(rust_helper_library ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
 add_executable(talker src/publisher_member_function.cpp)
-add_dependencies(talker client)
+add_dependencies(talker rust_helper_library)
 ament_target_dependencies(talker rclcpp std_msgs)
 
 add_executable(listener src/subscriber_member_function.cpp)
