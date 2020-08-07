@@ -30,7 +30,7 @@ else ()
     set(TARGET_DIR "release")
 endif ()
 
-set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_helper.so")
+set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_helper.a")
 
 # Compile the Rust library
 message(STATUS "Running Cargo on Rust package")
