@@ -15,13 +15,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# message(STATUS "Running rust_helper CMAKE")
-# add_subdirectory(src/rust_helper)
-
 message(STATUS "Working on Rust")
 message(STATUS "Source dir: " ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
 
+# Tie Rust's compiler to compile in the same mode as the rest of the CMake project
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Compiling Rust in Debug mode")
     set(CARGO_CMD cargo build)
