@@ -34,18 +34,7 @@ endif ()
 
 set(CLIENT_SO "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/librust_helper.so")
 
-# message(STATUS "Generating C++ bridge header files")
-# add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
-#   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
-#   COMMENT "Building C++ bridge header files"
-# 	DEPENDS src/lib.rs)
-
-# message(STATUS "Generating C++ bridge cc files")
-# add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
-#   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
-#   COMMENT "Building C++ bridge cc files"
-# 	DEPENDS src/lib.rs)
-
+# Compile the Rust library
 message(STATUS "Running Cargo on Rust package")
 add_custom_target(client ALL
     COMMENT "Compiling client module"
@@ -53,17 +42,15 @@ add_custom_target(client ALL
     COMMAND cp ${CLIENT_SO} ${CMAKE_CURRENT_BINARY_DIR}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper)
 set_target_properties(client PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
-# add_dependencies(client
-#   ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
-#   ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
-# )
 
+# Set up the code generator for the Rust library's .h file
 add_custom_command(TARGET client
   # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs --header > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.h
   COMMENT "Building C++ bridge header files"
 	DEPENDS src/lib.rs)
 
+# Set up the code generator for the Rust library's .cc file
 add_custom_command(TARGET client
   # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
   COMMAND cxxbridge ${CMAKE_CURRENT_SOURCE_DIR}/src/rust_helper/src/lib.rs > ${CMAKE_CURRENT_BINARY_DIR}/lib.rs.cc
@@ -75,12 +62,14 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
+# Link up the talker
 add_executable(talker src/publisher_member_function.cpp)
 target_include_directories(talker
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR})
 ament_target_dependencies(talker rclcpp std_msgs)
 
+# Link up the listener
 add_executable(listener src/subscriber_member_function.cpp)
 ament_target_dependencies(listener rclcpp std_msgs)
 
