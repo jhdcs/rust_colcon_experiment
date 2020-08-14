@@ -19,10 +19,7 @@ endif()
 # find_package(Corrosion REQUIRED)
 add_subdirectory(src/corrosion)
 
-message(STATUS "Working on Rust")
-message(STATUS "Source dir: " ${CMAKE_CURRENT_SOURCE_DIR})
-message(STATUS "Binary dir: " ${CMAKE_CURRENT_BINARY_DIR})
-
+# Build the Rust shared library package
 add_subdirectory(src/rust_helper)
 
 # find dependencies
