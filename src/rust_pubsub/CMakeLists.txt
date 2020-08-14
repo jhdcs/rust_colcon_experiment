@@ -37,7 +37,7 @@ target_link_libraries(talker rust_helper)
 
 target_include_directories(talker
   PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}/rust_pubsub/src/rust_helper)
+  ${CMAKE_CURRENT_SOURCE_DIR}/rust_pubsub/src/rust_helper)
 ament_target_dependencies(talker rclcpp std_msgs)
 
 # Link up the listener
@@ -47,6 +47,7 @@ ament_target_dependencies(listener rclcpp std_msgs)
 install(TARGETS
   talker
   listener
+  rust_helper
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
