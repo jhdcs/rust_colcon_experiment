@@ -6,5 +6,5 @@ mod ffi {
 }
 
 fn gen_message(count: u32) -> String {
-    format!("Hello from rust! {}", count)
+    format!("Hello from rust! {}\0", count)
 }

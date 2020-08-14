@@ -41,10 +41,17 @@ ament_target_dependencies(talker rclcpp std_msgs)
 add_executable(listener src/subscriber_member_function.cpp)
 ament_target_dependencies(listener rclcpp std_msgs)
 
+ament_export_libraries(rust_helper)
+
+install(TARGETS
+  rust_helper
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+
 install(TARGETS
   talker
   listener
-  rust_helper
-  DESTINATION lib/${PROJECT_NAME})
+  RUNTIME DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
