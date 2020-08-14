@@ -1,5 +1,5 @@
 [package]
-name = "rust_helper"
+name = "rust_helper_bridged"
 version = "0.1.0"
 authors = ["Jacob Hassold <jhassold@dcscorp.com>"]
 edition = "2018"

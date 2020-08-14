@@ -19,7 +19,7 @@
 #include "std_msgs/msg/string.hpp"
 
 // Includes for Rust <-> C++ communication via cxx
-#include "rust_bridge.h"
+#include "lib.rs.h"
 
 using namespace std::chrono_literals;
 
